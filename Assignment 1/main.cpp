@@ -56,7 +56,7 @@ void loadModel(const char *filename)
             read=fscanf(objFile, "%c %f %f %f", &ch,&x,&y,&z);
             if(read==4&&ch=='v') {
                 // store the vertices for use when adding facets
-                std::tuple<int,int,int> vertex (x,y,z);
+                std::tuple<GLfloat,GLfloat,GLfloat> vertex (x,y,z);
                 vertices.push_back(vertex);
             }
             if(read==4&&ch=='f') {
@@ -79,7 +79,7 @@ void plotPoints() {
 //    GL_TRIANGLE== facets;
     glBegin(GL_POINTS);
     for (unsigned i=0; i < vertices.size(); i++) {
-        int x1,y1,z1;
+        GLfloat x1,y1,z1;
         std::tie (x1,y1,z1) = vertices.at(i);
         glVertex3f(x1,y1,z1);
     }
@@ -95,7 +95,8 @@ void plotFacets() {
     glPushMatrix();
             glBegin(GL_TRIANGLES);
             for (unsigned i=0; i < facets.size(); i++) {
-                int x1,y1,z1,a,b,c;
+                GLfloat x1,y1,z1;
+                int a,b,c;
                 
                 std::tie (a,b,c) = facets.at(i);
                 std::tie (x1,y1,z1) = vertices.at(a-1);
@@ -113,13 +114,13 @@ void plotFacets() {
 void drawModel()
 {
     glPushMatrix();
-    glTranslatef(0, 0.00, -256);
+    glTranslatef(-6, 10.00, -256);
     glColor3f(1.0, 1.0, 1.0);
-    glScalef(50.0, 50.0, 50.0);
+    glScalef(10.0, 10.0, 10.0);
     
     glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
-    glRotatef(rotate, 0, 1, 0);
+    glRotatef(rotate, 1, 1, 1);
     glCallList(model);
     glPopMatrix();
     rotate += 1;
@@ -143,15 +144,15 @@ int main(int argc, char** argv) {
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize (1024, 768);
     glutInitWindowPosition (20, 20);
-    glutCreateWindow (argv[0]);
+    glutCreateWindow ("CSC 5870 Fall 2018 - Assignment 1");
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutIdleFunc(display);
-    gluLookAt(.1, .1, .5, 10.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    gluLookAt(0, 0, 0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     char *filename="/Users/cplater/Developer/CSC 5870/Assignment 1/Assignment 1/cow.obj";
     loadModel(filename);
-    plotPoints();
-//    plotFacets();
+//    plotPoints();
+    plotFacets();
     glutMainLoop();
     return 0;
 }
