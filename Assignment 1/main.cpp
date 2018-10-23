@@ -130,6 +130,11 @@ void drawModel()
 }
 
 void display(void) {
+    
+    gluLookAt(0, 0, 0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+    plotPoints();
+//    plotFacets();
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -148,11 +153,8 @@ int main(int argc, char** argv) {
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutIdleFunc(display);
-    gluLookAt(0, 0, 0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     char *filename="/Users/cplater/Developer/CSC 5870/Assignment 1/Assignment 1/cow.obj";
     loadModel(filename);
-//    plotPoints();
-    plotFacets();
     glutMainLoop();
     return 0;
 }
