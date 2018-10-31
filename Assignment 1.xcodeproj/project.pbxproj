@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B204A60A218368BE00F2D956 /* libglui.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B204A609218368BE00F2D956 /* libglui.a */; };
+		B204A60C218368F000F2D956 /* glui.h in Frameworks */ = {isa = PBXBuildFile; fileRef = B204A60B218368F000F2D956 /* glui.h */; };
 		B2B49E292172AF530098352F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B2B49E282172AF530098352F /* main.cpp */; };
 		B2B49E312172AF810098352F /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2B49E302172AF810098352F /* GLUT.framework */; };
 		B2B49E332172AF890098352F /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2B49E322172AF890098352F /* OpenGL.framework */; };
@@ -25,6 +27,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B204A609218368BE00F2D956 /* libglui.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglui.a; path = ../../../../../usr/local/Cellar/glui/2.36/lib/libglui.a; sourceTree = "<group>"; };
+		B204A60B218368F000F2D956 /* glui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = glui.h; path = ../../../../../usr/local/Cellar/glui/2.36/include/GL/glui.h; sourceTree = "<group>"; };
 		B2B49E252172AF530098352F /* Assignment 1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Assignment 1"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2B49E282172AF530098352F /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		B2B49E302172AF810098352F /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
@@ -38,6 +42,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B204A60C218368F000F2D956 /* glui.h in Frameworks */,
+				B204A60A218368BE00F2D956 /* libglui.a in Frameworks */,
 				B2B49E332172AF890098352F /* OpenGL.framework in Frameworks */,
 				B2B49E312172AF810098352F /* GLUT.framework in Frameworks */,
 			);
@@ -76,6 +82,8 @@
 		B2B49E2F2172AF810098352F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B204A60B218368F000F2D956 /* glui.h */,
+				B204A609218368BE00F2D956 /* libglui.a */,
 				B2B49E322172AF890098352F /* OpenGL.framework */,
 				B2B49E302172AF810098352F /* GLUT.framework */,
 			);
@@ -261,6 +269,10 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = G6HFGRFH53;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/glui/2.36/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -270,6 +282,10 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = G6HFGRFH53;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/glui/2.36/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
