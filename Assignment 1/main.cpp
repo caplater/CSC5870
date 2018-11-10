@@ -19,11 +19,6 @@
 //• Change the values of the near and far clipping plane.
 //• BONUS: Rotate the model around non-major axes as intuitively as possible!
 
-//TODO: Rotate the camera around the X, Y, and Z axes.
-//TODO: Rotate the camera according to the moving direction and distance of the mouse.
-//TODO: Change the field of view of the camera - both horizontal and vertical.
-//TODO: Change the values of the near and far clipping plane
-
 #define GL_SILENCE_DEPRECATION
 
 #include <OpenGL/OpenGL.h>
@@ -69,7 +64,7 @@ void plotPoints() {
     glPointSize(1.0);
     glNewList(pointsModel, GL_COMPILE);
     glBegin(GL_POINTS);
-    for (unsigned i=0; i < vertices.size(); i++) { 
+    for (unsigned i=0; i < vertices.size(); i++) {
         GLfloat x1,y1,z1;
         std::tie (x1,y1,z1) = vertices.at(i);
         glVertex3f(x1,y1,z1);
