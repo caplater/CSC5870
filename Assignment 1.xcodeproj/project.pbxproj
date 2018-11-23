@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		B204A60A218368BE00F2D956 /* libglui.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B204A609218368BE00F2D956 /* libglui.a */; };
 		B204A60C218368F000F2D956 /* glui.h in Frameworks */ = {isa = PBXBuildFile; fileRef = B204A60B218368F000F2D956 /* glui.h */; };
+		B269302121A7815C0080470A /* jpeglib.h in Frameworks */ = {isa = PBXBuildFile; fileRef = B269302021A7815C0080470A /* jpeglib.h */; };
+		B269302321A782D10080470A /* jerror.h in Frameworks */ = {isa = PBXBuildFile; fileRef = B269302221A782D10080470A /* jerror.h */; };
+		B269302421A786210080470A /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B269301E21A780FE0080470A /* libjpeg.a */; };
 		B2B49E292172AF530098352F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B2B49E282172AF530098352F /* main.cpp */; };
 		B2B49E312172AF810098352F /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2B49E302172AF810098352F /* GLUT.framework */; };
 		B2B49E332172AF890098352F /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2B49E322172AF890098352F /* OpenGL.framework */; };
@@ -29,6 +32,11 @@
 /* Begin PBXFileReference section */
 		B204A609218368BE00F2D956 /* libglui.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglui.a; path = ../../../../../usr/local/Cellar/glui/2.36/lib/libglui.a; sourceTree = "<group>"; };
 		B204A60B218368F000F2D956 /* glui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = glui.h; path = ../../../../../usr/local/Cellar/glui/2.36/include/GL/glui.h; sourceTree = "<group>"; };
+		B269301C21A76FD00080470A /* checker_256x256.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = checker_256x256.jpg; sourceTree = "<group>"; };
+		B269301D21A76FD00080470A /* cow-tex-fin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "cow-tex-fin.jpg"; sourceTree = "<group>"; };
+		B269301E21A780FE0080470A /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = ../../../../../usr/local/Cellar/jpeg/9c/lib/libjpeg.a; sourceTree = "<group>"; };
+		B269302021A7815C0080470A /* jpeglib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = jpeglib.h; path = ../../../../../usr/local/Cellar/jpeg/9c/include/jpeglib.h; sourceTree = "<group>"; };
+		B269302221A782D10080470A /* jerror.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = jerror.h; path = ../../../../../usr/local/Cellar/jpeg/9c/include/jerror.h; sourceTree = "<group>"; };
 		B2B49E252172AF530098352F /* Assignment 1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Assignment 1"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2B49E282172AF530098352F /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		B2B49E302172AF810098352F /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
@@ -42,6 +50,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B269302421A786210080470A /* libjpeg.a in Frameworks */,
+				B269302321A782D10080470A /* jerror.h in Frameworks */,
+				B269302121A7815C0080470A /* jpeglib.h in Frameworks */,
 				B204A60C218368F000F2D956 /* glui.h in Frameworks */,
 				B204A60A218368BE00F2D956 /* libglui.a in Frameworks */,
 				B2B49E332172AF890098352F /* OpenGL.framework in Frameworks */,
@@ -75,6 +86,8 @@
 				B2B49E282172AF530098352F /* main.cpp */,
 				B2B49E342172B2FF0098352F /* cube.obj */,
 				B2B49E352172D1110098352F /* cow.obj */,
+				B269301C21A76FD00080470A /* checker_256x256.jpg */,
+				B269301D21A76FD00080470A /* cow-tex-fin.jpg */,
 			);
 			path = "Assignment 1";
 			sourceTree = "<group>";
@@ -82,6 +95,9 @@
 		B2B49E2F2172AF810098352F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B269302221A782D10080470A /* jerror.h */,
+				B269302021A7815C0080470A /* jpeglib.h */,
+				B269301E21A780FE0080470A /* libjpeg.a */,
 				B204A60B218368F000F2D956 /* glui.h */,
 				B204A609218368BE00F2D956 /* libglui.a */,
 				B2B49E322172AF890098352F /* OpenGL.framework */,
@@ -272,6 +288,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/Cellar/glui/2.36/lib,
+					/usr/local/Cellar/jpeg/9c/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -285,6 +302,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/Cellar/glui/2.36/lib,
+					/usr/local/Cellar/jpeg/9c/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
