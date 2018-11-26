@@ -32,8 +32,8 @@
 /* Begin PBXFileReference section */
 		B204A609218368BE00F2D956 /* libglui.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglui.a; path = ../../../../../usr/local/Cellar/glui/2.36/lib/libglui.a; sourceTree = "<group>"; };
 		B204A60B218368F000F2D956 /* glui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = glui.h; path = ../../../../../usr/local/Cellar/glui/2.36/include/GL/glui.h; sourceTree = "<group>"; };
+		B2108C4621AC46000012C817 /* cow-tex-fin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "cow-tex-fin.jpg"; sourceTree = "<group>"; };
 		B269301C21A76FD00080470A /* checker_256x256.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = checker_256x256.jpg; sourceTree = "<group>"; };
-		B269301D21A76FD00080470A /* cow-tex-fin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "cow-tex-fin.jpg"; sourceTree = "<group>"; };
 		B269301E21A780FE0080470A /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = ../../../../../usr/local/Cellar/jpeg/9c/lib/libjpeg.a; sourceTree = "<group>"; };
 		B269302021A7815C0080470A /* jpeglib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = jpeglib.h; path = ../../../../../usr/local/Cellar/jpeg/9c/include/jpeglib.h; sourceTree = "<group>"; };
 		B269302221A782D10080470A /* jerror.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = jerror.h; path = ../../../../../usr/local/Cellar/jpeg/9c/include/jerror.h; sourceTree = "<group>"; };
@@ -87,7 +87,7 @@
 				B2B49E342172B2FF0098352F /* cube.obj */,
 				B2B49E352172D1110098352F /* cow.obj */,
 				B269301C21A76FD00080470A /* checker_256x256.jpg */,
-				B269301D21A76FD00080470A /* cow-tex-fin.jpg */,
+				B2108C4621AC46000012C817 /* cow-tex-fin.jpg */,
 			);
 			path = "Assignment 1";
 			sourceTree = "<group>";

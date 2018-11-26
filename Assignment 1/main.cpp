@@ -27,148 +27,51 @@
 #include <tuple>
 #include <vector>
 #include <math.h>
+#include "jpeglib.h"
+#include "jerror.h"
+#include <iostream>
 
-GLuint pointsModel,faceModel, surfaceModel;
+GLuint loadImage(const char *);
 
-std::vector< std::tuple<GLfloat,GLfloat,GLfloat> > vertices;
-std::vector< std::tuple<GLfloat,GLfloat,GLfloat> > facets;
+GLuint pointsModel, faceModel, surfaceModel;
 
-int width = 1024,
-    height = 768,
-    rotatex = 0,
-    rotatey = 0,
-    rotatez = 0,
-    mode = 0;
-float   rotate,
-        x = -.5f, y = .5f, z = -128.0f,
-        zNear = 10.0f, zFar = 128.0f,
-        hratio = (float) width / height, vratio = (float) width / height,
-        fov = 60.0f,
-        eyex = 0.0f, eyey = 0.0f, eyez = -100.0f,
-        focusx = 0.0f, focusy= 0.0f, focusz= 0.0f,
-        minx = 0.0f, miny = 0.0f, minz = 0.0f,
-        maxx = 0.0f, maxy = 0.0f, maxz = 0.0f;
+std::vector<std::tuple<GLfloat, GLfloat, GLfloat>> vertices;
+std::vector<std::tuple<GLfloat, GLfloat, GLfloat>> facets;
 
-static int  menu_id, submenu_id, submenu2_id, submenu3_id, submenu4_id, submenu5_id, submenu6_id;
+int width = 1024, height = 768, rotatex = 0, rotatey = 0, rotatez = 0, mode = 0,
+light = 0;
+float xrot, yrot, zrot,
+x = -.50, y = -.50, z = -128.0f, zNear = 10.0f, zFar = 128.0f,
+hratio = (float)width / height, vratio = (float)width / height, fov = 60.0f,
+eyex = 0.0f, eyey = 0.0f, eyez = -100.0f, focusx = 0.0f, focusy = 0.0f,
+focusz = 0.0f, minx = 0.0f, miny = 0.0f, minz = 0.0f, maxx = 0.0f,
+maxy = 0.0f, maxz = 0.0f, red = 1.0f, blue =1.0f, green = 1.0f, alpha = 1.0f;
 
-void init(void)
-{
-    glClearColor (0.0, 0.0, 0.0, 0.0);
-    glShadeModel (GL_FLAT);
-    glMatrixMode(GL_PROJECTION);
-    gluLookAt(eyex, eyey, eyez, focusx, focusy, focusz, 0, 1, 0);
-}
+static int menu_id, submenu_id, submenu2_id, submenu3_id, submenu4_id,
+submenu5_id, submenu6_id;
+GLuint check, cow, texture;
 
-void plotPoints() {
-    pointsModel=glGenLists(1);
-    glPointSize(1.0);
-    glNewList(pointsModel, GL_COMPILE);
-    glBegin(GL_POINTS);
-    for (unsigned i=0; i < vertices.size(); i++) {
-        GLfloat x1,y1,z1;
-        std::tie (x1,y1,z1) = vertices.at(i);
-        glVertex3f(x1,y1,z1);
-    }
-    glEnd();
-    glEndList();
-}
 
-void plotFacets() {
-    faceModel=glGenLists(2);
-    glNewList(faceModel, GL_COMPILE);
-    glBegin(GL_TRIANGLES);
-    glShadeModel(GL_FLAT);
-    for (unsigned i=0; i < facets.size(); i++) {
-        GLfloat x1,y1,z1;
-        int a,b,c;
-
-        std::tie (a,b,c) = facets.at(i);
-        std::tie (x1,y1,z1) = vertices.at(a-1);
-        glVertex3f(x1,y1,z1);
-        std::tie (x1,y1,z1) = vertices.at(b-1);
-        glVertex3f(x1,y1,z1);
-        std::tie (x1,y1,z1) = vertices.at(c-1);
-        glVertex3f(x1,y1,z1);
-    }
-    glEnd();
-    glEndList();
-}
-
-void drawModel()
-{
-    glLoadIdentity();
-    glTranslatef(x, y, z);
-    glColor3f(1.0, 1.0, 1.0);
-    glScalef(1.5, 1.5, 1.5);
-    switch (mode) {
-        case 1:
-            glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-            break;
-        case 2:
-            glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-            break;
-    }
-    glTranslatef(x, y, -(z/10));
-//    if (rotatex || rotatey || rotatez) {
-        glRotatef(rotate, rotatex, rotatey, rotatez);
-//    }
-    glTranslatef(0, 0, -6.4);
-    switch (mode) {
-        case 0:
-            glCallList(pointsModel);
-            break;
-        case 1:
-            glCallList(faceModel);
-            break;
-        case 2:
-            glCallList(faceModel);
-            break;
-    }
-    if (rotatex || rotatey || rotatez) {
-    rotate += 1;
-    }
-    if(rotate>360 ) {
-        rotate -= 360;
-    }
-}
-
-void display(void)
-{
+void init(void) {
     
-    glClearColor(0.0, 0.0, 0.0, 1.0);
-    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW);
-    drawModel();
-    glutSwapBuffers();
-}
-
-void reshape (int w, int h)
-{
-    glViewport(0, 0, (GLsizei) w, (GLsizei) h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glFrustum(-hratio, hratio, -vratio, vratio, zNear, zFar);
-    glMatrixMode(GL_MODELVIEW);
-}
-
-void loadModel(const char *filename)
-{
     FILE *objFile;
     int read;
-    GLfloat x,y,z;
+    GLfloat x, y, z;
     char ch;
-    objFile=fopen(filename, "r");
+    const char *filename =
+    "/Users/cplater/Developer/CSC 5870/Assignment 1/Assignment 1/cow.obj";
+    
+    objFile = fopen(filename, "r");
     if (!objFile) {
         printf("%s not found!\n", filename);
         exit(1);
     }
     {
-        while(!(feof(objFile))) {
-            read=fscanf(objFile, "%c %f %f %f", &ch,&x,&y,&z);
-            if(read==4&&ch=='v') {
+        while (!(feof(objFile))) {
+            read = fscanf(objFile, "%c %f %f %f", &ch, &x, &y, &z);
+            if (read == 4 && ch == 'v') {
                 // store the vertices for use when adding facets
-                std::tuple<GLfloat,GLfloat,GLfloat> vertex (x,y,z);
+                std::tuple<GLfloat, GLfloat, GLfloat> vertex(x, y, z);
                 vertices.push_back(vertex);
                 
                 if (minx == 0 || x < minx) {
@@ -190,65 +93,247 @@ void loadModel(const char *filename)
                     maxz = z;
                 }
             }
-            if(read==4&&ch=='f') {
-                std::tuple<int,int,int> facet (x,y,z);
+            if (read == 4 && ch == 'f') {
+                std::tuple<int, int, int> facet(x, y, z);
                 facets.push_back(facet);
             }
         }
     }
     fclose(objFile);
+    
+    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat mat_shininess[] = { 50.0 };
+    
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glEnable(GL_DEPTH_TEST);
+    glShadeModel(GL_SMOOTH);
+    
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+    
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    
+    
+    const char *filename2 = "/Users/cplater/Developer/CSC 5870/Assignment 1/Assignment "
+    "1/checker_256x256.jpg";
+    check = loadImage(filename2);
+    const char *filename3 = "/Users/cplater/Developer/CSC 5870/Assignment 1/Assignment "
+    "1/cow-tex-fin.jpg";
+    cow = loadImage(filename3);
+    
+    texture = cow;
+    
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    
+    // Create light components.
+    GLfloat ambientLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    GLfloat diffuseLight[] = { red, green, blue, alpha };
+    GLfloat specularLight[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+    GLfloat position[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    
+    // Assign created components to GL_LIGHT0.
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
+    glLightfv(GL_LIGHT0, GL_POSITION, position);
+    
+    glMatrixMode(GL_PROJECTION);
+    gluLookAt(eyex, eyey, eyez, focusx, focusy, focusz, 0, 1, 0);
+    
+    // Plot points
+    
+    pointsModel = glGenLists(1);
+    glPointSize(1.0);
+    glNewList(pointsModel, GL_COMPILE);
+    glBegin(GL_POINTS);
+    for (unsigned i = 0; i < vertices.size(); i++) {
+        GLfloat x1, y1, z1;
+        std::tie(x1, y1, z1) = vertices.at(i);
+        glVertex3f(x1, y1, z1);
+    }
+    glEnd();
+    glEndList();
+    
+    // Plot facets
+    
+    faceModel = glGenLists(2);
+    glNewList(faceModel, GL_COMPILE);
+    glBegin(GL_TRIANGLES);
+    for (unsigned i = 0; i < facets.size(); i++) {
+        GLfloat x1, y1, z1, x2, y2, z2, x3, y3, z3;
+        
+        int a, b, c;
+        
+        std::tie(a, b, c) = facets.at(i);
+        
+        std::tie(x1, y1, z1) = vertices.at(a - 1);
+        std::tie(x2, y2, z2) = vertices.at(b - 1);
+        std::tie(x3, y3, z3) = vertices.at(c - 1);
+        
+        glTexCoord2f(0, 0);
+        glVertex3f(x1, y1, z1);
+        glTexCoord2f(1, 1);
+        glVertex3f(x2, y2, z2);
+        if (i%2 == 0) {
+            glTexCoord2f(0,1);
+        } else {
+            glTexCoord2f(1, 0);
+        }
+        glVertex3f(x3, y3, z3);
+        
+        // 2 vectors
+        // a->b
+        // a->c
+        float v1x = x2 - x1;
+        float v1y = y2 - y1;
+        float v1z = z2 - z1;
+        
+        float v2x = x3 - x1;
+        float v2y = y3 - y1;
+        float v2z = z3 - z1;
+        
+        float xn = v1y * v2z - v1z * v2y;
+        float yn = v1z * v2x - v1x * v2z;
+        float zn = v1x * v2y - v1y * v2x;
+        
+        float len = sqrt((xn * xn) + (yn * yn) + (zn * zn));
+        xn /= len;
+        yn /= len;
+        zn /= len;
+        
+        glNormal3f(xn, yn, zn);
+    }
+    glEnd();
+    glEndList();
+}
+
+void display(void) {
+    
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    glPushMatrix();
+    glLoadIdentity();
+    
+    if (light) {
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
+        GLfloat diffuseLight[] = { red, green, blue, alpha };
+        
+        // Assign created components to GL_LIGHT0.
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+    } else {
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
+    }
+    glFrontFace(GL_CW);
+    glCullFace(GL_BACK);
+    glMaterialf(GL_FRONT, GL_SHININESS, 32.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glTranslatef(x, y, z);
+    glColor3f(1.0, 1.0, 1.0);
+    glScalef(1.5, 1.5, 1.5);
+    switch (mode) {
+        case 0:
+            glDisable(GL_TEXTURE_2D);
+        case 1:
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            glDisable(GL_TEXTURE_2D);
+            break;
+        case 2:
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            glBindTexture(GL_TEXTURE_2D, texture);
+            glEnable(GL_TEXTURE_2D);
+            break;
+    }
+    glTranslatef(x, y, -(z / 10));
+    glRotated(xrot, 1, 0, 0);
+    glRotated(yrot, 0, 1, 0);
+    glRotated(zrot, 0, 0, 1);
+    glTranslatef(0, 0, -6.4);
+    switch (mode) {
+        case 0:
+            glCallList(pointsModel);
+            break;
+        case 1:
+            glCallList(faceModel);
+            break;
+        case 2:
+            glCallList(faceModel);
+            break;
+    }
+    
+    if (rotatex) {
+        xrot += 1;
+    }
+    if (rotatey) {
+        yrot += 1;
+    }
+    if (rotatez) {
+        zrot += 1;
+    }
+    if (xrot > 360) {
+        xrot -= 360;
+    }
+    if (yrot > 360) {
+        yrot -= 360;
+    }
+    if (zrot > 360) {
+        zrot -= 360;
+    }
+    glPopMatrix();
+    glutSwapBuffers();
+}
+
+void reshape(int w, int h) {
+    glViewport(0, 0, (GLsizei)w, (GLsizei)h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    hratio = (float)w / h;
+    vratio = (float)w / h;
+    glFrustum(-hratio, hratio, -vratio, vratio, zNear, zFar);
+    glMatrixMode(GL_MODELVIEW);
+}
+
+void loadModel(const char *filename) {
+    
 }
 
 static void xrotate() {
     if (rotatex) {
         rotatex = 0;
-        rotate = 0;
-    }
-    else
+        //        rotate = 0;
+    } else
         rotatex = 1;
 }
 
 static void yrotate() {
     if (rotatey) {
         rotatey = 0;
-        rotate = 0;
-    }
-    else
+    } else
         rotatey = 1;
 }
 
 static void zrotate() {
     if (rotatez) {
         rotatez = 0;
-        rotate = 0;
-    }
-    else
+    } else
         rotatez = 1;
 }
 
-static void zoomIn() {
-    z += .5;
-}
+static void zoomIn() { z += .5; }
 
-static void zoomOut() {
-    z -= .5;
-}
+static void zoomOut() { z -= .5; }
 
-static void modelUp() {
-    ::y += .1;
-}
+static void modelUp() { ::y += .1; }
 
-static void modelLeft() {
-    ::x -= .1;
-}
+static void modelLeft() { ::x -= .1; }
 
-static void modelDown() {
-    ::y -= .1;
-}
+static void modelDown() { ::y -= .1; }
 
-static void modelRight() {
-    ::x += .1;
-}
+static void modelRight() { ::x += .1; }
 
 static void moveFarFarther() {
     ::zFar += .5;
@@ -299,7 +384,7 @@ static void changeNearplane() {
 }
 static void camrotright() {
     eyez += .5;
-//    focusy += 10;
+    //    focusy += 10;
     glMatrixMode(GL_PROJECTION);
     gluLookAt(eyex, eyey, eyez, focusx, focusy, focusz, 0, 1, 0);
     glMatrixMode(GL_MODELVIEW);
@@ -307,7 +392,7 @@ static void camrotright() {
 
 static void camrotleft() {
     eyez -= .5;
-//    focusy -= 10;
+    //    focusy -= 10;
     glMatrixMode(GL_PROJECTION);
     gluLookAt(eyex, eyey, eyez, focusx, focusy, focusz, 0, 1, 0);
     glMatrixMode(GL_MODELVIEW);
@@ -368,12 +453,11 @@ static void decHorFov() {
     glMatrixMode(GL_MODELVIEW);
 }
 
-
-void menu(int num){
+void menu(int num) {
     
     switch (num) {
         case 0:
-            //quit
+            // quit
             glutDestroyWindow(0);
             exit(0);
             break;
@@ -381,7 +465,7 @@ void menu(int num){
             char *c;
             glColor3d(1.0, 0.0, 0.0);
             glRasterPos2f(200, 200);
-            for (c="Assignment 1 by Charles Plater (000032329"; *c != '\0'; c++) {
+            for (c = "Assignment 1 by Charles Plater (000032329"; *c != '\0'; c++) {
                 glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
             }
             break;
@@ -417,7 +501,10 @@ void menu(int num){
             rotatex = 0;
             rotatey = 0;
             rotatez = 0;
-            rotate = 0;
+            xrot = 0;
+            yrot = 0;
+            zrot = 0;
+            //            xrotate = 0;
             break;
         case 11:
             // Translate Camera X
@@ -503,12 +590,12 @@ void menu(int num){
     glutPostRedisplay();
 }
 
-void createMenu(void){
+void createMenu(void) {
     submenu_id = glutCreateMenu(menu);
     glutAddMenuEntry("X", 7);
     glutAddMenuEntry("Y", 8);
     glutAddMenuEntry("Z", 9);
-    glutAddMenuEntry("Stop", 10);
+    glutAddMenuEntry("Reset", 10);
     submenu5_id = glutCreateMenu(menu);
     glutAddMenuEntry("Points", 15);
     glutAddMenuEntry("Wireframe", 16);
@@ -530,7 +617,7 @@ void createMenu(void){
     glutAddMenuEntry("Up", 27);
     glutAddMenuEntry("Down", 28);
     menu_id = glutCreateMenu(menu);
-    glutAddMenuEntry("About",1);
+    glutAddMenuEntry("About", 1);
     glutAddSubMenu("Draw", submenu5_id);
     glutAddSubMenu("Rotate Model", submenu_id);
     glutAddSubMenu("Translate Model", submenu6_id);
@@ -586,6 +673,18 @@ void keyboard(unsigned char key, int x, int y) {
         case '3':
             mode = 2;
             break;
+        case '4':
+            light = 1;
+            break;
+        case '5':
+            light = 0;
+            break;
+        case '6':
+            texture = check;
+            break;
+        case '7':
+            texture = cow;
+            break;
         case 'r':
             moveFarFarther();
             break;
@@ -610,6 +709,55 @@ void keyboard(unsigned char key, int x, int y) {
         case 'n':
             incVertFov();
             break;
+        case '8':
+            red += .1;
+            if (red > 1) {
+                red = 1;
+            }
+            break;
+        case '9':
+            green += .1;
+            if (green > 1) {
+                green = 1;
+            }
+            break;
+        case '0':
+            blue += .1;
+            if (blue > 1) {
+                blue = 1;
+            }
+            break;
+        case '-':
+            alpha += .1;
+            if (alpha > 1) {
+                alpha = 1;
+            }
+            break;
+        case '*':
+            red -= .1;
+            if (red < 0) {
+                red = 0;
+            }
+            break;
+        case '(':
+            green -= .1;
+            if (green < 0) {
+                green = 0;
+            }
+            break;
+        case ')':
+            blue -= .1;
+            if (blue < 0) {
+                blue = 0;
+            }
+            break;
+        case '_':
+            alpha -= .1;
+            if (alpha < 0) {
+                alpha = 0;
+            }
+            break;
+            
     }
     glutPostRedisplay();
 }
@@ -639,21 +787,83 @@ void mouseMotion(int x, int y) {
     rotatey = y;
 }
 
-int main(int argc, char** argv)
-{
-    // Read the model file
-    char *filename="/Users/cplater/Developer/CSC 5870/Assignment 1/Assignment 1/cow.obj";
-    loadModel(filename);
+GLuint loadImage(const char *FileName) {
+    unsigned long x, y;
+    unsigned int texture_id;
+    unsigned long data_size; // Size of the image
+    int channels;            // 3 =>RGB   4 =>RGBA
+    unsigned int type;
+    unsigned char *rowptr[1];           // pointer to an array
+    unsigned char *jdata;               // data for the image
+    struct jpeg_decompress_struct info; // for our jpeg info
+    struct jpeg_error_mgr err;          // the error handler
+    
+    FILE *file = fopen(FileName, "rb"); // open the file
+    
+    info.err = jpeg_std_error(&err);
+    jpeg_create_decompress(&info); // fills info structure
+    
+    // if the jpeg file doesn't load
+    if (!file) {
+        fprintf(stderr, "Error reading JPEG file %s!", FileName);
+        return 0;
+    }
+    
+    jpeg_stdio_src(&info, file);
+    jpeg_read_header(&info, TRUE); // read jpeg file header
+    
+    jpeg_start_decompress(&info); // decompress the file
+    
+    // set width and height
+    x = info.output_width;
+    y = info.output_height;
+    channels = info.num_components;
+    type = GL_RGB;
+    if (channels == 4)
+        type = GL_RGBA;
+    
+    data_size = x * y * 3;
+    
+    // Read the image lines in one at a time and
+    // store the date in an array.
+    jdata = (unsigned char *)malloc(data_size);
+    while (info.output_scanline < info.output_height) // loop
+    {
+        rowptr[0] =
+        (unsigned char *)jdata + 3 * info.output_width * info.output_scanline;
+        
+        jpeg_read_scanlines(&info, rowptr, 1);
+    }
+    jpeg_finish_decompress(&info);
+    glGenTextures(1, &texture_id);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, x, y, GL_RGB, GL_UNSIGNED_BYTE, jdata);
+    
+    jpeg_destroy_decompress(&info);
+    fclose(file); // close the file
+    free(jdata);
+    
+    return texture_id; // return the OpenGL textureid
+}
 
+int main(int argc, char **argv) {
     // Environment initialization
     glutInit(&argc, argv);
-    glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize (width, height);
-    glutInitWindowPosition (100, 100);
-    glutCreateWindow ("CSC 5870 Fall 2018 - Assignment 1");
-    init ();
-    plotPoints();
-    plotFacets();
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitWindowSize(width, height);
+    glutInitWindowPosition(100, 100);
+    glutCreateWindow("CSC 5870 Fall 2018 - Assignment 1");
+    init();
+    //    filename = "/Users/cplater/Developer/CSC 5870/Assignment 1/Assignment "
+    //    "1/checker_256x256.jpg";
+    //    check = loadImage(filename);
+    //    filename = "/Users/cplater/Developer/CSC 5870/Assignment 1/Assignment "
+    //    "1/cow-tex-fin.jpg";
+    //    cow = loadImage(filename);
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutIdleFunc(display);
